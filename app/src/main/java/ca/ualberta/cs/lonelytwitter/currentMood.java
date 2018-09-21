@@ -6,7 +6,6 @@ import java.util.Date;
 public abstract class CurrentMood implements MoodInterface{
     private Date MoodDate;
     private String Mood;
-    private ArrayList<String> MoodList = new ArrayList<String>();
 
     CurrentMood(){
         this.Mood = new String();
