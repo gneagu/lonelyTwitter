@@ -32,7 +32,7 @@ public class LonelyTwitterActivity extends Activity {
 
 	ArrayList<Tweet> tweetList;
 	ArrayAdapter<Tweet> adapter;
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class LonelyTwitterActivity extends Activity {
 
 		bodyText = (EditText) findViewById(R.id.body);
 		Button saveButton = (Button) findViewById(R.id.save);
+		Button clearButton = (Button) findViewById(R.id.clear);
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +60,23 @@ public class LonelyTwitterActivity extends Activity {
 
 			}
 		});
+
+        clearButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+
+
+                tweetList.clear();
+
+
+                saveInFile();
+				adapter.notifyDataSetChanged();
+
+
+
+			}
+        });
 	}
 
 	@Override
@@ -66,7 +84,7 @@ public class LonelyTwitterActivity extends Activity {
 		super.onStart();
 
 		loadFromFile();
-//		adapter.notifyDataSetChanged();
+//    adapter.notifyDataSetChanged();
 
 
 		adapter = new ArrayAdapter<Tweet>(this,
@@ -75,7 +93,7 @@ public class LonelyTwitterActivity extends Activity {
 	}
 
 	private void loadFromFile() {
-//		ArrayList<String> tweets = new ArrayList<String>();
+//    ArrayList<String> tweets = new ArrayList<String>();
 		try {
 			FileInputStream fis = openFileInput(FILENAME);
 			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
