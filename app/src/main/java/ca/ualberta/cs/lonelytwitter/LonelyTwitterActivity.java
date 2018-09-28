@@ -11,10 +11,12 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -66,14 +68,10 @@ public class LonelyTwitterActivity extends Activity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
 
-
                 tweetList.clear();
-
 
                 saveInFile();
 				adapter.notifyDataSetChanged();
-
-
 
 			}
         });
