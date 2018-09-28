@@ -1,5 +1,5 @@
 package ca.ualberta.cs.lonelytwitter;
-
+ 
 import java.util.Date;
 
 public abstract class Tweet implements Tweetable {
