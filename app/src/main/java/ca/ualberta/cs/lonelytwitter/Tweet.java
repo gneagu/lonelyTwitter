@@ -7,8 +7,6 @@ public abstract class Tweet implements Tweetable {
     private Date date;
     private String message;
     private static final Integer MAX_CHARS = 140;
-    private ArrayList<String> MoodList = new ArrayList<String>();
-
 
     //Empty argument constructor with default values
     Tweet() {
@@ -39,4 +37,9 @@ public abstract class Tweet implements Tweetable {
 
     //No method body implemented! We leave that up to the subclasses (they MUST implement it)
     public abstract Boolean isImportant();
+
+    @Override
+    public String toString() {
+        return this.getMessage();
+    }
 }
