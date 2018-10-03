@@ -1,3 +1,9 @@
+/**
+ * LonelyTwitterActivity
+ *
+ * @Version: 1.0
+ * @Date: Oct 2, 2018
+ */
 package ca.ualberta.cs.lonelytwitter;
 
 import java.io.BufferedReader;
@@ -28,27 +34,29 @@ import com.google.gson.reflect.TypeToken;
 
 public class LonelyTwitterActivity extends Activity {
 
-	private static final String FILENAME = "file.sav";
-	private EditText bodyText;
-	private ListView oldTweetsList;
+	private static final String FILENAME = "file.sav"; //name of the file where data;s saved to disk
+	private EditText bodyText; // implemented EditText object
+	private ListView oldTweetsList; // implemented ListView object
 
-	ArrayList<Tweet> tweetList;
-	ArrayAdapter<Tweet> adapter;
+	ArrayList<Tweet> tweetList; // arraylist of type tweet
+	ArrayAdapter<Tweet> adapter; // arrayAdapter for the tweet object
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		super.onCreate(savedInstanceState); // ??
+		setContentView(R.layout.main); // Specifies the content view in use
 
 
-		bodyText = (EditText) findViewById(R.id.body);
-		Button saveButton = (Button) findViewById(R.id.save);
-		Button clearButton = (Button) findViewById(R.id.clear);
-		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
+		bodyText = (EditText) findViewById(R.id.body); // specifies the id of the editText object
+		Button saveButton = (Button) findViewById(R.id.save); // specifies the id of the saveButton
+		Button clearButton = (Button) findViewById(R.id.clear); // specifies the id of the clearButton
+		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList); // specifies the id of the listView
 
+		/** Listener for the save button. Code inside is run when the button is interacted. */
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
+			/** Code inside this function is run when the button is used */
 			public void onClick(View v) {
 				setResult(RESULT_OK);
 				String text = bodyText.getText().toString();
@@ -63,8 +71,10 @@ public class LonelyTwitterActivity extends Activity {
 			}
 		});
 
+		/** Listener for the clear Button.*/
         clearButton.setOnClickListener(new View.OnClickListener() {
 
+			/** Code that is run when the clear button is used. */
             public void onClick(View v) {
                 setResult(RESULT_OK);
 
@@ -78,6 +88,7 @@ public class LonelyTwitterActivity extends Activity {
 	}
 
 	@Override
+	/** Code run when the app is started/ */
 	protected void onStart() {
 		super.onStart();
 
@@ -90,8 +101,9 @@ public class LonelyTwitterActivity extends Activity {
 		oldTweetsList.setAdapter(adapter);
 	}
 
+	/** Code run to read data from the save file */
 	private void loadFromFile() {
-//    ArrayList<String> tweets = new ArrayList<String>();
+
 		try {
 			FileInputStream fis = openFileInput(FILENAME);
 			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
@@ -109,7 +121,7 @@ public class LonelyTwitterActivity extends Activity {
 		}
 	}
 
-
+	/** Code run to write data to the save file. */
 	private void saveInFile() {
 		try {
 
