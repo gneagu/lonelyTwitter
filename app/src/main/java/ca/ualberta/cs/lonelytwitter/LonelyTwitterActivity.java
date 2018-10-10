@@ -58,16 +58,39 @@ public class LonelyTwitterActivity extends Activity {
 				ElasticsearchTweetController.AddTweetsTask addTweetsTask
 						= new ElasticsearchTweetController.AddTweetsTask();
 				addTweetsTask.execute(newTweet);
+				adapter.notifyDataSetChanged();
 			}
 		});
+
+
+		final Context context = this;
 
 		clearButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
 				setResult(RESULT_OK);
-				tweetList.clear();
-				deleteFile(FILENAME);  // TODO deprecate this button
+
+				ElasticsearchTweetController.GetTweetsTask getTweetsTask =
+						new ElasticsearchTweetController.GetTweetsTask();
+
+				String text = bodyText.getText().toString();
+				getTweetsTask.execute(text);
+
+				try {
+					tweetList = getTweetsTask.get();
+				}  catch (Exception e) {
+					Log.e("Error", "Failed to get the tweets out of the async object.");
+				}
+
+//				Log.v("DERP", "" + text);
+				adapter = new ArrayAdapter<NormalTweet>(context, R.layout.list_item, tweetList);
+				oldTweetsList.setAdapter(adapter);
+
+
+//				tweetList.clear();
+//				deleteFile(FILENAME);  // TODO deprecate this button
 				adapter.notifyDataSetChanged();
+
 			}
 		});
 

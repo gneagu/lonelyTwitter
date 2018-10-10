@@ -57,8 +57,12 @@ public class ElasticsearchTweetController {
 
             ArrayList<NormalTweet> tweets = new ArrayList<NormalTweet>();
 
-            // TODO Build the query
-            Search search = new Search.Builder(search_parameters[0])
+//            String query = "{ \"query\": { \"term\" : { \"message\" : \"love\" } } }";
+
+            String query = "{ \"query\": { \"term\" : { \"message\" : \""+search_parameters[0]+"\" } } }";
+
+
+            Search search = new Search.Builder(query)
                     .addIndex("testing")
                     .addType("tweet")
                     .build();
@@ -69,8 +73,10 @@ public class ElasticsearchTweetController {
                 if (result.isSucceeded()) {
                     List<NormalTweet> foundTweets = result.getSourceAsObjectList(NormalTweet.class);
                     tweets.addAll(foundTweets);
+                    Log.i("DERP", "" + tweets);
+
                 } else {
-                    Log.i("Error", "The search query failed to find any tweets.");
+                    Log.i("Error", "The search query failed to find any tweets for some reason.");
                 }
             }
             catch (Exception e) {
