@@ -2,6 +2,7 @@ package ca.ualberta.cs.lonelytwitter;
 
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 import junit.framework.TestCase;
 
@@ -15,6 +16,7 @@ public class LonelyTwitterActivityTest extends ActivityInstrumentationTestCase2 
     }
 
     public void testStart() throws Exception {
+        Log.v("TestCase: ", "Started");
         Activity activity = getActivity();
 
     }
