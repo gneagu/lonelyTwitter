@@ -1,13 +1,6 @@
-/**
- * LonelyTwitterActivity
- *
- * @Version: 1.0
- * @Date: Oct 2, 2018
- */
 package ca.ualberta.cs.lonelytwitter;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,13 +10,13 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,115 +26,108 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class LonelyTwitterActivity extends Activity {
+	private LonelyTwitterActivity activity = this;
 
-	private static final String FILENAME = "file.sav"; //name of the file where data;s saved to disk
-	private EditText bodyText; // implemented EditText object
-	private ListView oldTweetsList; // implemented ListView object
+	private static final String FILENAME = "file.sav";
+	private EditText bodyText;
+	private ListView oldTweetsList;
+	private ArrayList<Tweet> tweetList = new ArrayList<Tweet>();
+	private ArrayAdapter<Tweet> adapter;
 
-	ArrayList<Tweet> tweetList; // arraylist of type tweet
-	ArrayAdapter<Tweet> adapter; // arrayAdapter for the tweet object
+	public ListView getOldTweetsList(){
+		return oldTweetsList;
+	}
 
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState); // ??
-		setContentView(R.layout.main); // Specifies the content view in use
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
 
+		bodyText = (EditText) findViewById(R.id.body);
+		Button saveButton = (Button) findViewById(R.id.save);
+		Button clearButton = (Button) findViewById(R.id.clear);
+		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
 
-		bodyText = (EditText) findViewById(R.id.body); // specifies the id of the editText object
-		Button saveButton = (Button) findViewById(R.id.save); // specifies the id of the saveButton
-		Button clearButton = (Button) findViewById(R.id.clear); // specifies the id of the clearButton
-		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList); // specifies the id of the listView
-
-		/** Listener for the save button. Code inside is run when the button is interacted. */
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
-			/** Code inside this function is run when the button is used */
 			public void onClick(View v) {
 				setResult(RESULT_OK);
 				String text = bodyText.getText().toString();
-
-				Tweet tweet = new NormalTweet(text);
-				tweetList.add(tweet);
-
-
+				Tweet newTweet = new NormalTweet(text);
+				tweetList.add(newTweet);
+				adapter.notifyDataSetChanged();
 				saveInFile();
+			}
+		});
+
+		clearButton.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+				setResult(RESULT_OK);
+				tweetList.clear();
+				deleteFile("file.sav");
 				adapter.notifyDataSetChanged();
 
 			}
 		});
 
-		/** Listener for the clear Button.*/
-        clearButton.setOnClickListener(new View.OnClickListener() {
+		oldTweetsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-			/** Code that is run when the clear button is used. */
-            public void onClick(View v) {
-                setResult(RESULT_OK);
+				Intent intent = new Intent(activity, EditTweetActivity.class);
 
-                tweetList.clear();
+				intent.putExtra("NAME", "" + tweetList.get(i).getMessage());
 
-                saveInFile();
-				adapter.notifyDataSetChanged();
-
+				startActivity(intent);
 			}
-        });
+		});
+
+
 	}
 
 	@Override
-	/** Code run when the app is started/ */
 	protected void onStart() {
+		// TODO Auto-generated method stub
 		super.onStart();
-
 		loadFromFile();
-//    adapter.notifyDataSetChanged();
-
-
 		adapter = new ArrayAdapter<Tweet>(this,
 				R.layout.list_item, tweetList);
 		oldTweetsList.setAdapter(adapter);
 	}
 
-	/** Code run to read data from the save file */
-	private void loadFromFile() {
 
+	private void loadFromFile() {
 		try {
 			FileInputStream fis = openFileInput(FILENAME);
 			BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-
-			Gson gson = new Gson(); //library to save objects
+			Gson gson = new Gson();
+			//Code taken from http://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt Sept.22,2016
 			Type listType = new TypeToken<ArrayList<NormalTweet>>(){}.getType();
-
 			tweetList = gson.fromJson(in, listType);
-
 		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			tweetList = new ArrayList<Tweet>();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException();
 		}
 	}
 
-	/** Code run to write data to the save file. */
+
 	private void saveInFile() {
 		try {
 
-			FileOutputStream fos = openFileOutput(FILENAME,
-					Context.MODE_PRIVATE);
-
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-
+			FileOutputStream fos = openFileOutput(FILENAME,0);
+			OutputStreamWriter writer = new OutputStreamWriter(fos);
 			Gson gson = new Gson();
-			gson.toJson(tweetList, out);
-			out.flush();
-
-			fos.close();
+			gson.toJson(tweetList, writer);
+			writer.flush();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException();
 		}
-
 	}
 }
