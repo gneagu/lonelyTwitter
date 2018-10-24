@@ -22,10 +22,6 @@ public class EditTweetActivity extends Activity {
 
     protected void displayText(String textToBeShown) {
 
-
-
-        Log.v("HER", "" + textToBeShown);
-
         bodyText.setText(textToBeShown);
     }
 }
